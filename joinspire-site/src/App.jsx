@@ -5,13 +5,13 @@ const FOUNDER_PHOTO = "/joseph.jpg";
 const PROJECTS = [
   { id:1, title:"How 40 People Built a $1.25B AI Unicorn to $50M ARR in 5 Months", videoId:"CR7kxeuAPNs", category:"Podcast", client:"CLIMB by VSC" },
   { id:2, title:"The Pig Butchering Scam: How AI Supercharges Every Attack Vector", videoId:"B4gp-33hKXo", category:"Podcast", client:"CLIMB by VSC" },
-  { id:3, title:"He Fooled the World, Not the FBI", videoId:"Gmh5dURF7ws", category:"Documentary", client:"Jude Bela" },
+  { id:3, title:"He Fooled the World, Not the FBI", videoId:"Gmh5dURF7ws", category:"Documentary", client:"Tayo Notes" },
   { id:4, title:"$6.8bn Fraud: The Hunt For Nigeria's Oil Cabal", videoId:"aFUGGexWxCw", category:"Documentary", client:"Jude Bela" },
   { id:5, title:"WORST Foods That Feed CANCER Cells", videoId:"I6ss5y1WBSc", category:"Educational", client:"Leonid Kim MD" },
   { id:6, title:"7 Signs Someone is Secretly Wealthy", videoId:"SnX_GHgiwu0", category:"Educational", client:"Humphrey Yang" },
   { id:7, title:"How West Africa Became A Terror Hotspot", videoId:"cv8FMNQycU0", category:"Documentary", client:"Jude Bela" },
-  { id:8, title:"24 Hours in NYC with Africa's BIGGEST Travel Creator", videoId:"LQH7vi5CIW0", category:"Vlog", client:"Tayo Aina" },
-  { id:9, title:"How DreaKnowsBest Monetizes her 6M TikTok Followers", videoId:"X1hCwnxEnpA", category:"Vlog", client:"Danny Sully" },
+  { id:8, title:"24 Hours in NYC with Africa's BIGGEST Travel Creator", videoId:"LQH7vi5CIW0", category:"Vlog", client:"Donald Aduvie" },
+  { id:9, title:"How DreaKnowsBest Monetizes her 6M TikTok Followers", videoId:"X1hCwnxEnpA", category:"Vlog", client:"Donald Aduvie" },
 ];
 
 const CATEGORIES = ["All","Podcast","Documentary","Educational","Vlog","IRL / Reality"];
@@ -34,7 +34,7 @@ const CLIENTS = [
 const TESTIMONIALS = [
   { name:"Jude Bela", handle:"198K subscribers", quote:"He is highly dedicated to the task and understands how to tell a story with editing. He is a team player and fun to be with. His creativity brings the stories to life." },
   { name:"Tayo Notes", handle:"2.21K subscribers", quote:"A great video editor, illustrator and animator. He goes above and beyond to support projects with full commitment to the channel's excellence. I will gladly recommend him anytime because you will be getting more than a video editor." },
-  { name:"Ameji", handle:"Client", quote:"Professional, detail-oriented, and always delivers beyond expectations. Working with Joinspire Studios elevated the quality of our content significantly." },
+  { name:"Ameji", handle:"Client", quote:"Really glad to have you onboard and to be learning from you. I'd definitely want to keep working with you overseeing stuff." },
 ];
 
 const SERVICES = [
@@ -140,7 +140,10 @@ function Nav({ onNavigate, currentPage }) {
   return (
     <>
       <nav className={`nav ${s ? "nav--s" : ""}`}>
-        <button className="logo" onClick={() => onNavigate("home")}>Joinspire<span className="dot">.</span></button>
+        <div className="nav-left">
+          <button className="logo" onClick={() => onNavigate("home")}>Joinspire<span className="dot">.</span></button>
+          <div className="nav-clocks desk"><DualClock /></div>
+        </div>
         <div className="nav-r desk">
           <button onClick={() => go("work")}>Work</button>
           <button onClick={() => go("clients")}>Clients</button>
@@ -177,7 +180,7 @@ function Hero() {
         <iframe src={`https://www.youtube.com/embed/${S.showreelId}?autoplay=1&mute=1&loop=1&playlist=${S.showreelId}&controls=0&showinfo=0&rel=0&modestbranding=1&playsinline=1`} title="Showreel" allow="autoplay; encrypted-media" allowFullScreen />
         <div className="hero-dim" />
       </div>
-      <div className={`hero-content hero-content--right ${vis ? "hero-content--in" : ""}`}>
+      <div className={`hero-content ${vis ? "hero-content--in" : ""}`}>
         <p className="hero-over">{S.name}</p>
         <h1 className="hero-h1">We make<br/>things people<br/>can't stop watching.</h1>
         <p className="hero-sub">Documentary. Podcast. Animation. Video editing. For creators who refuse to blend in.</p>
@@ -515,7 +518,7 @@ function Contact({ onNavigate }) {
           <button className="foot-logo" onClick={() => onNavigate("home")}>Joinspire<span className="dot">.</span></button>
           <span className="foot-cp">© {new Date().getFullYear()} Joinspire Studios</span>
         </div>
-        <DualClock />
+        <span className="foot-loc">{S.location}</span>
       </footer>
     </section>
   );
@@ -616,13 +619,10 @@ export default function App() {
   return (
     <ThemeWrap>
       <style>{`
-@font-face{font-family:'Neue Rumble';src:url('/fonts/GCNeueRumble-Regular.woff2') format('woff2');font-weight:400;font-style:normal;font-display:swap}
-@font-face{font-family:'Neue Rumble';src:url('/fonts/GCNeueRumble-Medium.woff2') format('woff2');font-weight:500;font-style:normal;font-display:swap}
-@font-face{font-family:'Neue Rumble';src:url('/fonts/GCNeueRumble-SemiBold.woff2') format('woff2');font-weight:600;font-style:normal;font-display:swap}
-@font-face{font-family:'Neue Rumble';src:url('/fonts/GCNeueRumble-Bold.woff2') format('woff2');font-weight:700;font-style:normal;font-display:swap}
+@import url('https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600,700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap');
 
-:root{--fd:'Neue Rumble',sans-serif;--fb:'DM Sans',sans-serif}
+:root{--fd:'General Sans',sans-serif;--fb:'DM Sans',sans-serif}
 .t-light{--bg:#F7F6F3;--bg2:#FFF;--fg:#1A1A1A;--fg2:#555;--fg3:#999;--fg4:#CCC;--brd:rgba(0,0,0,0.08);--brd2:rgba(0,0,0,0.14);--nav-bg:rgba(247,246,243,0.92);--overlay:rgba(0,0,0,0.88);--card-sh:0 1px 3px rgba(0,0,0,0.04)}
 .t-dark{--bg:#0A0A0A;--bg2:#141414;--fg:#FFF;--fg2:rgba(255,255,255,0.55);--fg3:rgba(255,255,255,0.3);--fg4:rgba(255,255,255,0.1);--brd:rgba(255,255,255,0.06);--brd2:rgba(255,255,255,0.12);--nav-bg:rgba(10,10,10,0.92);--overlay:rgba(0,0,0,0.92);--card-sh:0 1px 3px rgba(0,0,0,0.3)}
 *{margin:0;padding:0;box-sizing:border-box}html{scroll-behavior:smooth}
@@ -638,6 +638,8 @@ body{background:var(--bg);color:var(--fg);font-family:var(--fb);overflow-x:hidde
 
 .nav{position:fixed;top:0;left:0;right:0;z-index:1000;padding:22px clamp(20px,4vw,60px);display:flex;justify-content:space-between;align-items:center;transition:all 0.4s}
 .nav--s{padding:14px clamp(20px,4vw,60px);background:var(--nav-bg);backdrop-filter:blur(20px);border-bottom:1px solid var(--brd)}
+.nav-left{display:flex;align-items:center;gap:24px}
+.nav-clocks .clocks{gap:16px}.nav-clocks .clock-city{font-size:11px}.nav-clocks .clock-time{font-size:11px}.nav-clocks .clock-tz{font-size:9px}
 .logo{font-family:var(--fd);font-size:18px;font-weight:700;color:var(--fg);background:none;border:none;cursor:pointer;text-decoration:none}
 .nav-r{display:flex;gap:28px;align-items:center}
 .nav-r button{background:none;border:none;color:var(--fg3);font-family:var(--fb);font-size:12px;font-weight:500;letter-spacing:1.2px;text-transform:uppercase;cursor:pointer;transition:color 0.3s}.nav-r button:hover{color:var(--fg)}
@@ -646,7 +648,7 @@ body{background:var(--bg);color:var(--fg);font-family:var(--fb);overflow-x:hidde
 .desk{display:flex}.mob{display:none!important}
 .mob-menu{position:fixed;inset:0;background:var(--bg);z-index:999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px}
 .mob-menu button{background:none;border:none;font-family:var(--fd);font-size:24px;font-weight:700;color:var(--fg);cursor:pointer}
-@media(max-width:700px){.desk{display:none!important}.mob{display:flex!important}}
+@media(max-width:700px){.desk{display:none!important}.mob{display:flex!important}.nav-clocks{display:none}}
 
 .sec-head{margin-bottom:32px}.sec-label{font-size:11px;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:var(--fg3);margin-bottom:8px}.sec-label--c{text-align:center}
 .sec-title{font-family:var(--fd);font-size:clamp(24px,4vw,40px);font-weight:700;line-height:1.15;color:var(--fg)}
@@ -655,13 +657,12 @@ body{background:var(--bg);color:var(--fg);font-family:var(--fb);overflow-x:hidde
 .hero{position:relative;height:100vh;display:flex;align-items:center;overflow:hidden}
 .hero-bg{position:absolute;inset:0;z-index:0}.hero-bg iframe{width:100%;height:100%;border:none;pointer-events:none;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);min-width:177.78vh;min-height:56.25vw}
 .hero-dim{position:absolute;inset:0;background:rgba(0,0,0,0.55)}
-.hero-content{position:relative;z-index:1;padding:0 clamp(20px,4vw,60px);max-width:900px;opacity:0;transform:translateY(30px);transition:all 1s cubic-bezier(0.16,1,0.3,1)}.hero-content--in{opacity:1;transform:translateY(0)}
-.hero-content--right{margin-left:auto;margin-right:clamp(20px,6vw,120px)}
+.hero-content{position:relative;z-index:1;padding:0 clamp(32px,5vw,80px);max-width:900px;opacity:0;transform:translateY(30px);transition:all 1s cubic-bezier(0.16,1,0.3,1)}.hero-content--in{opacity:1;transform:translateY(0)}
 .hero-over{font-family:var(--fb);font-size:11px;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,0.5);margin-bottom:20px}
 .hero-h1{font-family:var(--fd);font-size:clamp(36px,6.5vw,76px);font-weight:700;line-height:1.06;color:#fff;margin-bottom:20px}
 .hero-sub{font-size:clamp(14px,1.5vw,17px);line-height:1.7;color:rgba(255,255,255,0.45);max-width:440px;margin-bottom:32px}
 .hero-acts{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
-.hero-tag{position:absolute;bottom:32px;right:clamp(20px,6vw,120px);font-size:10px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.3)}
+.hero-tag{position:absolute;bottom:32px;left:clamp(32px,5vw,80px);font-size:10px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.3)}
 .btn{font-family:var(--fb);font-size:12px;font-weight:600;letter-spacing:0.8px;text-transform:uppercase;cursor:pointer;transition:all 0.3s;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:8px;border:none}
 .btn--dark{background:var(--fg);color:var(--bg);padding:14px 32px}.btn--dark:hover{opacity:0.8}
 .btn--white{background:#fff;color:#000;padding:14px 32px}.btn--white:hover{opacity:0.9}
@@ -785,11 +786,11 @@ body{background:var(--bg);color:var(--fg);font-family:var(--fb);overflow-x:hidde
 
 /* FOOTER */
 .foot{max-width:1400px;margin:0 auto;padding:24px 0;border-top:1px solid var(--brd);display:flex;justify-content:space-between;align-items:center}
-.foot-left{display:flex;align-items:center;gap:20px}.foot-logo{font-family:var(--fd);font-size:14px;font-weight:700;color:var(--fg);text-decoration:none;background:none;border:none;cursor:pointer}.foot-cp{font-size:11px;color:var(--fg4)}
+.foot-left{display:flex;align-items:center;gap:20px}.foot-logo{font-family:var(--fd);font-size:14px;font-weight:700;color:var(--fg);text-decoration:none;background:none;border:none;cursor:pointer}.foot-cp{font-size:11px;color:var(--fg4)}.foot-loc{font-size:11px;color:var(--fg4);letter-spacing:1px}
 .clocks{display:flex;gap:24px}
 .clock-item{display:flex;align-items:center;gap:8px}
 .clock-city{font-family:var(--fd);font-size:13px;font-weight:600;color:var(--fg)}.clock-time{font-family:var(--fb);font-size:13px;color:var(--fg2);font-variant-numeric:tabular-nums}.clock-tz{font-size:10px;color:var(--fg4)}
-@media(max-width:640px){.foot{flex-direction:column;gap:16px;text-align:center}.clocks{gap:16px}}
+@media(max-width:640px){.foot{flex-direction:column;gap:12px;text-align:center}}
 
 /* SERVICE DETAIL PAGE */
 .sp-404{padding:200px 40px;text-align:center}
