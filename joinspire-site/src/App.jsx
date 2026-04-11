@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 
 const FOUNDER_PHOTO = "/joseph.jpg";
 
@@ -34,14 +34,21 @@ const CLIENTS = [
 const TESTIMONIALS = [
   { name:"Jude Bela", handle:"198K subscribers", quote:"He is highly dedicated to the task and understands how to tell a story with editing. He is a team player and fun to be with. His creativity brings the stories to life." },
   { name:"Tayo Notes", handle:"2.21K subscribers", quote:"A great video editor, illustrator and animator. He goes above and beyond to support projects with full commitment to the channel's excellence. I will gladly recommend him anytime because you will be getting more than a video editor." },
+  { name:"Ameji", handle:"Client", quote:"Professional, detail-oriented, and always delivers beyond expectations. Working with Joinspire Studios elevated the quality of our content significantly." },
 ];
 
 const SERVICES = [
-  { name:"Video Editing & Post-Production", price:"Get a Quote" },
-  { name:"2D & 3D Animation", price:"Get a Quote" },
-  { name:"Documentary Production", price:"Get a Quote" },
-  { name:"Podcast Editing & Production", price:"Get a Quote" },
-  { name:"Motion Graphics & Broadcast Design", price:"Get a Quote" },
+  { name:"Documentary Production", slug:"documentary", tagline:"Investigative stories that hold attention from first frame to last.", desc:"Full-service documentary production — from research and scripting through animated visual systems, 2D/3D explainers, and final edit. We build the kind of visual storytelling that turns complex real-world stories into pieces people can't look away from.", includes:["Research & scripting","Animated map explainers (Johnny Harris / Fern TV style)","2D vector & infographic animation","Historical visual design & texture work","Full post-production & color grade","Sound design & music supervision"], relatedCategory:"Documentary" },
+  { name:"Podcast Editing", slug:"podcast-editing", tagline:"Post-production that turns conversations into unmissable content.", desc:"We don't just cut audio — we build visual podcast experiences with strict editorial structure, short-clip workflows, and broadcast-quality graphics. Every episode is engineered for retention.", includes:["Full video + audio post-production","Non-linear 4-step opening montage","Short-clip structure (Result→Shock→Context→Payoff)","Lower thirds, text hierarchy & motion graphics","Thumbnail design with color psychology","B-roll asset curation & delivery"], relatedCategory:"Podcast" },
+  { name:"YouTube Editing", slug:"youtube-editing", tagline:"Edits that keep viewers watching until the end.", desc:"Sharp, retention-focused editing for educational, vlog, and long-form YouTube content. We handle pacing, graphics, transitions, and visual storytelling — so every video performs.", includes:["Full post-production & assembly edit","Motion graphics & animated overlays","Thumbnail design","Pacing & retention optimization","Color correction & grading","Sound mixing & cleanup"], relatedCategory:"Educational" },
+  { name:"Content Strategy", slug:"content-strategy", tagline:"A production intelligence layer for your content pipeline.", desc:"Strategic production planning — reverse-engineering what works, building repeatable content systems, and designing visual identities that position creators for growth.", includes:["Content audit & competitor analysis","Production blueprints & editorial calendars","Visual identity & brand system design","Thumbnail & title strategy","Performance framework integration","Creator positioning & differentiation"], relatedCategory:null },
+];
+
+const PROCESS_STEPS = [
+  { num:"01", title:"Discovery", desc:"We learn your channel, audience, and goals. You share references and raw material." },
+  { num:"02", title:"Blueprint", desc:"We map the edit structure, visual approach, and deliverables before touching a timeline." },
+  { num:"03", title:"Production", desc:"Editing, animation, graphics, and sound — built with obsessive attention to detail." },
+  { num:"04", title:"Delivery", desc:"Review rounds, final exports, and asset handoff. Ready to publish." },
 ];
 
 const S = {
@@ -88,14 +95,14 @@ function Grain() {
   );
 }
 
-// ===== DUAL CLOCK =====
+// ===== DUAL CLOCK — Lagos + Toronto =====
 function DualClock() {
   const [lagos, setLagos] = useState("");
-  const [london, setLondon] = useState("");
+  const [toronto, setToronto] = useState("");
   useEffect(() => {
     const tick = () => {
       setLagos(new Date().toLocaleTimeString("en-GB",{timeZone:"Africa/Lagos",hour:"2-digit",minute:"2-digit",second:"2-digit"}));
-      setLondon(new Date().toLocaleTimeString("en-GB",{timeZone:"Europe/London",hour:"2-digit",minute:"2-digit",second:"2-digit"}));
+      setToronto(new Date().toLocaleTimeString("en-GB",{timeZone:"America/Toronto",hour:"2-digit",minute:"2-digit",second:"2-digit"}));
     };
     tick();
     const i = setInterval(tick, 1000);
@@ -103,31 +110,41 @@ function DualClock() {
   }, []);
   return (
     <div className="clocks">
-      <div className="clock-item"><span className="clock-city">Lagos</span><span className="clock-time">{lagos}</span><span className="clock-tz">GMT+1</span></div>
-      <div className="clock-item"><span className="clock-city">London</span><span className="clock-time">{london}</span><span className="clock-tz">GMT</span></div>
+      <div className="clock-item"><span className="clock-city">Lagos</span><span className="clock-time">{lagos}</span><span className="clock-tz">WAT</span></div>
+      <div className="clock-item"><span className="clock-city">Toronto</span><span className="clock-time">{toronto}</span><span className="clock-tz">EST</span></div>
     </div>
   );
 }
 
 // ===== NAV =====
-function Nav() {
+function Nav({ onNavigate, currentPage }) {
   const [s, setS] = useState(false);
   const [mob, setMob] = useState(false);
+
   useEffect(() => {
     const f = () => setS(window.scrollY > 60);
     window.addEventListener("scroll", f);
     return () => window.removeEventListener("scroll", f);
   }, []);
-  const go = (id) => { document.getElementById(id)?.scrollIntoView({behavior:"smooth"}); setMob(false); };
+
+  const go = (id) => {
+    setMob(false);
+    if (currentPage !== "home") {
+      onNavigate("home");
+      setTimeout(() => document.getElementById(id)?.scrollIntoView({behavior:"smooth"}), 150);
+    } else {
+      document.getElementById(id)?.scrollIntoView({behavior:"smooth"});
+    }
+  };
 
   return (
     <>
       <nav className={`nav ${s ? "nav--s" : ""}`}>
-        <button className="logo" onClick={() => go("hero")}>Joinspire<span className="dot">.</span></button>
+        <button className="logo" onClick={() => onNavigate("home")}>Joinspire<span className="dot">.</span></button>
         <div className="nav-r desk">
           <button onClick={() => go("work")}>Work</button>
           <button onClick={() => go("clients")}>Clients</button>
-          <button onClick={() => go("pricing")}>Services</button>
+          <button onClick={() => go("services")}>Services</button>
           <button onClick={() => go("about")}>About</button>
           <a href={S.bookCall} className="nav-cta" target="_blank" rel="noopener noreferrer">Book a Call</a>
         </div>
@@ -139,8 +156,8 @@ function Nav() {
       </nav>
       {mob && (
         <div className="mob-menu">
-          {["work","clients","pricing","about","contact"].map(id => (
-            <button key={id} onClick={() => go(id)}>{id.charAt(0).toUpperCase()+id.slice(1)}</button>
+          {[["work","Work"],["clients","Clients"],["services","Services"],["about","About"],["contact","Contact"]].map(([id,label]) => (
+            <button key={id} onClick={() => go(id)}>{label}</button>
           ))}
         </div>
       )}
@@ -160,9 +177,9 @@ function Hero() {
         <iframe src={`https://www.youtube.com/embed/${S.showreelId}?autoplay=1&mute=1&loop=1&playlist=${S.showreelId}&controls=0&showinfo=0&rel=0&modestbranding=1&playsinline=1`} title="Showreel" allow="autoplay; encrypted-media" allowFullScreen />
         <div className="hero-dim" />
       </div>
-      <div className={`hero-content ${vis ? "hero-content--in" : ""}`}>
+      <div className={`hero-content hero-content--right ${vis ? "hero-content--in" : ""}`}>
         <p className="hero-over">{S.name}</p>
-        <h1 className="hero-h1">We make<br/>things people<br/><em>can't stop watching.</em></h1>
+        <h1 className="hero-h1">We make<br/>things people<br/>can't stop watching.</h1>
         <p className="hero-sub">Documentary. Podcast. Animation. Video editing. For creators who refuse to blend in.</p>
         <div className="hero-acts">
           <button className="btn btn--white" onClick={() => document.getElementById("work")?.scrollIntoView({behavior:"smooth"})}>See Our Work</button>
@@ -241,7 +258,7 @@ function Lightbox({project, onClose}) {
   );
 }
 
-// ===== WORK — Bento grid layout =====
+// ===== WORK =====
 function Work() {
   const [filter, setFilter] = useState("All");
   const [lbp, setLbp] = useState(null);
@@ -325,7 +342,7 @@ function Reviews() {
       <div className="rev-grid">
         {TESTIMONIALS.map((t, i) => (
           <div key={i} className="rev-card">
-            <div className="rev-q">"</div>
+            <div className="rev-q">&ldquo;</div>
             <p className="rev-text">{t.quote}</p>
             <div className="rev-author">
               <div className="rev-av">{t.name.charAt(0)}</div>
@@ -341,45 +358,81 @@ function Reviews() {
   );
 }
 
-// ===== PRICING =====
-function Pricing() {
-  const [form, setForm] = useState({name:"", email:"", budget:""});
+// ===== PROCESS =====
+function Process() {
   return (
-    <section id="pricing" className="pricing">
+    <section id="process" className="process-sec">
+      <div className="sec-head">
+        <p className="sec-label">How We Work</p>
+        <h2 className="sec-title">Our process.</h2>
+      </div>
+      <div className="proc-grid">
+        {PROCESS_STEPS.map((step) => (
+          <div key={step.num} className="proc-card">
+            <span className="proc-num">{step.num}</span>
+            <h3 className="proc-title">{step.title}</h3>
+            <p className="proc-desc">{step.desc}</p>
+          </div>
+        ))}
+      </div>
+      <div className="proc-cta">
+        <p className="proc-cta-text">We take on a limited number of projects each month to maintain quality.</p>
+        <a href={S.bookCall} className="btn btn--dark" target="_blank" rel="noopener noreferrer">Book Your Spot</a>
+      </div>
+    </section>
+  );
+}
+
+// ===== INQUIRY FORM =====
+function InquiryForm() {
+  const [form, setForm] = useState({name:"", email:"", budget:"", project:""});
+  return (
+    <div className="form-fields">
+      <input type="text" placeholder="Your Name" value={form.name} onChange={e => setForm({...form, name:e.target.value})} className="form-input" />
+      <input type="email" placeholder="Email Address" value={form.email} onChange={e => setForm({...form, email:e.target.value})} className="form-input" />
+      <select value={form.budget} onChange={e => setForm({...form, budget:e.target.value})} className="form-input">
+        <option value="">What's your Budget?</option>
+        <option>Under $1,000</option>
+        <option>$1,000 - $3,000</option>
+        <option>$3,000 - $7,000</option>
+        <option>$7,000+</option>
+      </select>
+      <textarea placeholder="Describe Your Project" value={form.project} onChange={e => setForm({...form, project:e.target.value})} className="form-input form-textarea" rows={4} />
+      <a href={`mailto:${S.email}?subject=Project Inquiry&body=Name: ${form.name}%0ABudget: ${form.budget}%0A%0AProject: ${encodeURIComponent(form.project)}`} className="btn btn--dark form-btn">Send Inquiry</a>
+    </div>
+  );
+}
+
+// ===== SERVICES (Home section) =====
+function ServicesSection({ onNavigate }) {
+  return (
+    <section id="services" className="pricing">
       <div className="sec-head">
         <p className="sec-label">Our Services</p>
         <h2 className="sec-title">What we do.</h2>
       </div>
       <div className="sv-list">
         {SERVICES.map((s, i) => (
-          <div key={i} className="sv-row">
-            <span className="sv-name">{s.name}</span>
-            <span className="sv-price">{s.price}</span>
-          </div>
+          <button key={i} className="sv-row sv-row--link" onClick={() => onNavigate("service:" + s.slug)}>
+            <div className="sv-left">
+              <span className="sv-name">{s.name}</span>
+              <span className="sv-tagline">{s.tagline}</span>
+            </div>
+            <span className="sv-arrow">→</span>
+          </button>
         ))}
       </div>
       <div className="form-sec">
         <h3 className="form-title">Let's start your project</h3>
         <p className="form-sub">Fill out the form to get started, or <a href={S.bookCall} target="_blank" rel="noopener noreferrer">book a call</a>.</p>
-        <div className="form-fields">
-          <input type="text" placeholder="Your Name" value={form.name} onChange={e => setForm({...form, name:e.target.value})} className="form-input" />
-          <input type="email" placeholder="Email Address" value={form.email} onChange={e => setForm({...form, email:e.target.value})} className="form-input" />
-          <select value={form.budget} onChange={e => setForm({...form, budget:e.target.value})} className="form-input">
-            <option value="">What's your Budget?</option>
-            <option>Under $1,000</option>
-            <option>$1,000 - $3,000</option>
-            <option>$3,000 - $7,000</option>
-            <option>$7,000+</option>
-          </select>
-          <a href={`mailto:${S.email}?subject=Project Inquiry&body=Name: ${form.name}%0ABudget: ${form.budget}`} className="btn btn--dark form-btn">Send Inquiry</a>
-        </div>
+        <InquiryForm />
       </div>
     </section>
   );
 }
 
 // ===== ABOUT =====
-function About() {
+function About({ onNavigate }) {
   const [popup, setPopup] = useState(false);
   return (
     <section id="about" className="about">
@@ -407,8 +460,8 @@ function About() {
           <span className="as-label">Services</span>
           <div className="as-line" />
           <div className="as-list">
-            {["Video Editing","2D Animation","3D Animation","Documentary Production","Podcast Production","Motion Graphics","Broadcast Design"].map(s => (
-              <span key={s} className="as-tag">{s}</span>
+            {SERVICES.map(sv => (
+              <button key={sv.slug} className="as-tag" onClick={() => onNavigate("service:" + sv.slug)}>{sv.name}</button>
             ))}
           </div>
         </div>
@@ -440,7 +493,7 @@ function About() {
 }
 
 // ===== CONTACT =====
-function Contact() {
+function Contact({ onNavigate }) {
   return (
     <section id="contact" className="contact">
       <div className="contact-inner">
@@ -459,7 +512,7 @@ function Contact() {
       </div>
       <footer className="foot">
         <div className="foot-left">
-          <span className="foot-logo">Joinspire<span className="dot">.</span></span>
+          <button className="foot-logo" onClick={() => onNavigate("home")}>Joinspire<span className="dot">.</span></button>
           <span className="foot-cp">© {new Date().getFullYear()} Joinspire Studios</span>
         </div>
         <DualClock />
@@ -468,8 +521,98 @@ function Contact() {
   );
 }
 
+// ===== SERVICE DETAIL PAGE =====
+function ServicePage({ slug, onNavigate }) {
+  const service = SERVICES.find(s => s.slug === slug);
+  const [lbp, setLbp] = useState(null);
+
+  useEffect(() => { window.scrollTo(0, 0); }, [slug]);
+
+  if (!service) return (
+    <div className="sp-404">
+      <h2>Service not found</h2>
+      <button className="btn btn--dark" onClick={() => onNavigate("home")}>Back to Home</button>
+    </div>
+  );
+
+  const related = service.relatedCategory
+    ? PROJECTS.filter(p => p.category === service.relatedCategory)
+    : [];
+
+  return (
+    <div className="sp">
+      <section className="sp-hero">
+        <div className="sp-hero-inner">
+          <button className="sp-back" onClick={() => onNavigate("home")}>← Back</button>
+          <p className="sec-label">{service.name}</p>
+          <h1 className="sp-h1">{service.tagline}</h1>
+          <p className="sp-desc">{service.desc}</p>
+          <div className="sp-acts">
+            <a href={S.bookCall} className="btn btn--dark btn--lg" target="_blank" rel="noopener noreferrer">Book a Call</a>
+            <a href={`mailto:${S.email}`} className="btn btn--out btn--lg">Send Inquiry</a>
+          </div>
+        </div>
+      </section>
+
+      <section className="sp-includes">
+        <div className="sp-includes-inner">
+          <h2 className="sp-h2">What's included</h2>
+          <div className="sp-inc-grid">
+            {service.includes.map((item, i) => (
+              <div key={i} className="sp-inc-item">
+                <span className="sp-inc-num">{String(i+1).padStart(2,"0")}</span>
+                <span className="sp-inc-text">{item}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {related.length > 0 && (
+        <section className="sp-work">
+          <div className="sp-work-inner">
+            <div className="sec-head">
+              <p className="sec-label">Related Work</p>
+              <h2 className="sec-title">Projects in this category.</h2>
+            </div>
+            <div className="wgrid-bento">
+              {related.map((p, i) => (
+                <VCard key={p.id} project={p} onPlay={setLbp} size={i < 2 ? "large" : "normal"} />
+              ))}
+            </div>
+          </div>
+          {lbp && <Lightbox project={lbp} onClose={() => setLbp(null)} />}
+        </section>
+      )}
+
+      <section className="sp-cta-sec">
+        <div className="sp-cta-inner">
+          <h2 className="sp-cta-h2">Ready to start?</h2>
+          <p className="sp-cta-sub">We take on a limited number of projects each month.</p>
+          <div className="sp-acts">
+            <a href={S.bookCall} className="btn btn--dark btn--lg" target="_blank" rel="noopener noreferrer">Book a Call</a>
+          </div>
+        </div>
+      </section>
+
+      <Contact onNavigate={onNavigate} />
+    </div>
+  );
+}
+
 // ===== APP =====
 export default function App() {
+  const [page, setPage] = useState("home");
+
+  const navigate = (target) => {
+    setPage(target);
+    window.scrollTo(0, 0);
+  };
+
+  // Parse page state
+  const isService = page.startsWith("service:");
+  const serviceSlug = isService ? page.split(":")[1] : null;
+
   return (
     <ThemeWrap>
       <style>{`
@@ -487,7 +630,7 @@ body{background:var(--bg);color:var(--fg);font-family:var(--fb);overflow-x:hidde
 .t-light,.t-dark{background:var(--bg);min-height:100vh;transition:background 0.4s,color 0.4s}
 ::selection{background:rgba(0,0,0,0.12)}.t-dark ::selection{background:rgba(255,255,255,0.15)}
 ::-webkit-scrollbar{width:3px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--fg3)}
-.dot{opacity:0.2}em{font-style:italic}a{color:inherit}
+.dot{opacity:0.2}a{color:inherit}
 
 .t-toggle{position:fixed;bottom:24px;right:24px;z-index:1001;background:var(--bg2);border:1px solid var(--brd2);border-radius:20px;padding:3px;cursor:pointer;box-shadow:var(--card-sh)}
 .t-track{width:40px;height:22px;border-radius:11px;background:var(--brd);position:relative}
@@ -495,7 +638,7 @@ body{background:var(--bg);color:var(--fg);font-family:var(--fb);overflow-x:hidde
 
 .nav{position:fixed;top:0;left:0;right:0;z-index:1000;padding:22px clamp(20px,4vw,60px);display:flex;justify-content:space-between;align-items:center;transition:all 0.4s}
 .nav--s{padding:14px clamp(20px,4vw,60px);background:var(--nav-bg);backdrop-filter:blur(20px);border-bottom:1px solid var(--brd)}
-.logo{font-family:var(--fd);font-size:18px;font-weight:700;color:var(--fg);background:none;border:none;cursor:pointer}
+.logo{font-family:var(--fd);font-size:18px;font-weight:700;color:var(--fg);background:none;border:none;cursor:pointer;text-decoration:none}
 .nav-r{display:flex;gap:28px;align-items:center}
 .nav-r button{background:none;border:none;color:var(--fg3);font-family:var(--fb);font-size:12px;font-weight:500;letter-spacing:1.2px;text-transform:uppercase;cursor:pointer;transition:color 0.3s}.nav-r button:hover{color:var(--fg)}
 .nav-cta{background:var(--fg)!important;color:var(--bg)!important;padding:10px 22px!important;font-family:var(--fb)!important;font-size:12px!important;font-weight:600!important;letter-spacing:1px!important;text-transform:uppercase!important;text-decoration:none;border:none;cursor:pointer}
@@ -513,11 +656,12 @@ body{background:var(--bg);color:var(--fg);font-family:var(--fb);overflow-x:hidde
 .hero-bg{position:absolute;inset:0;z-index:0}.hero-bg iframe{width:100%;height:100%;border:none;pointer-events:none;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);min-width:177.78vh;min-height:56.25vw}
 .hero-dim{position:absolute;inset:0;background:rgba(0,0,0,0.55)}
 .hero-content{position:relative;z-index:1;padding:0 clamp(20px,4vw,60px);max-width:900px;opacity:0;transform:translateY(30px);transition:all 1s cubic-bezier(0.16,1,0.3,1)}.hero-content--in{opacity:1;transform:translateY(0)}
+.hero-content--right{margin-left:auto;margin-right:clamp(20px,6vw,120px)}
 .hero-over{font-family:var(--fb);font-size:11px;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,0.5);margin-bottom:20px}
-.hero-h1{font-family:var(--fd);font-size:clamp(36px,6.5vw,76px);font-weight:700;line-height:1.06;color:#fff;margin-bottom:20px}.hero-h1 em{color:rgba(255,255,255,0.6)}
+.hero-h1{font-family:var(--fd);font-size:clamp(36px,6.5vw,76px);font-weight:700;line-height:1.06;color:#fff;margin-bottom:20px}
 .hero-sub{font-size:clamp(14px,1.5vw,17px);line-height:1.7;color:rgba(255,255,255,0.45);max-width:440px;margin-bottom:32px}
 .hero-acts{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
-.hero-tag{position:absolute;bottom:32px;left:clamp(20px,4vw,60px);font-size:10px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.3)}
+.hero-tag{position:absolute;bottom:32px;right:clamp(20px,6vw,120px);font-size:10px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.3)}
 .btn{font-family:var(--fb);font-size:12px;font-weight:600;letter-spacing:0.8px;text-transform:uppercase;cursor:pointer;transition:all 0.3s;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:8px;border:none}
 .btn--dark{background:var(--fg);color:var(--bg);padding:14px 32px}.btn--dark:hover{opacity:0.8}
 .btn--white{background:#fff;color:#000;padding:14px 32px}.btn--white:hover{opacity:0.9}
@@ -528,7 +672,7 @@ body{background:var(--bg);color:var(--fg);font-family:var(--fb);overflow-x:hidde
 .hero-fs-x{position:absolute;top:20px;right:28px;background:none;border:none;color:#fff;font-size:32px;cursor:pointer;z-index:3001}
 .hero-fs-vid{width:100%;max-width:960px;aspect-ratio:16/9}.hero-fs-vid iframe{width:100%;height:100%;border:none}
 
-/* WORK — Bento grid: first 2 large, rest smaller */
+/* WORK */
 .work{padding:80px clamp(20px,4vw,60px);max-width:1400px;margin:0 auto}
 .filters{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:28px;padding-bottom:16px;border-bottom:1px solid var(--brd)}
 .fbtn{background:none;border:1px solid var(--brd);color:var(--fg3);font-family:var(--fb);font-size:12px;font-weight:500;padding:7px 16px;cursor:pointer;transition:all 0.3s;display:flex;align-items:center;gap:5px}.fbtn:hover{color:var(--fg2)}.fbtn--on{background:var(--fg);border-color:var(--fg);color:var(--bg)}
@@ -567,7 +711,7 @@ body{background:var(--bg);color:var(--fg);font-family:var(--fb);overflow-x:hidde
 
 /* REVIEWS */
 .reviews{padding:0 clamp(20px,4vw,60px) 80px;max-width:1400px;margin:0 auto}
-.rev-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:16px}
+.rev-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px}
 .rev-card{background:var(--bg2);border:1px solid var(--brd);padding:28px 24px 24px;position:relative}
 .rev-q{font-family:var(--fd);font-size:48px;font-weight:700;color:var(--fg4);line-height:1;position:absolute;top:16px;left:20px}
 .rev-text{font-size:15px;line-height:1.7;color:var(--fg2);margin-bottom:20px;padding-top:28px}
@@ -576,15 +720,33 @@ body{background:var(--bg);color:var(--fg);font-family:var(--fb);overflow-x:hidde
 .rev-name{font-family:var(--fd);font-size:14px;font-weight:700;color:var(--fg);display:block;line-height:1.2}.rev-handle{font-size:11px;color:var(--fg3)}
 @media(max-width:500px){.rev-grid{grid-template-columns:1fr}}
 
-/* PRICING */
+/* PROCESS */
+.process-sec{padding:80px clamp(20px,4vw,60px);max-width:1400px;margin:0 auto;border-top:1px solid var(--brd)}
+.proc-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--brd);margin-bottom:48px}
+.proc-card{background:var(--bg);padding:32px 28px}
+.proc-num{font-family:var(--fd);font-size:32px;font-weight:700;color:var(--fg4);display:block;margin-bottom:12px}
+.proc-title{font-family:var(--fd);font-size:18px;font-weight:700;color:var(--fg);margin-bottom:8px}
+.proc-desc{font-size:14px;line-height:1.7;color:var(--fg3)}
+.proc-cta{text-align:center;padding:32px 0 0}
+.proc-cta-text{font-size:15px;color:var(--fg2);margin-bottom:20px;font-style:italic}
+@media(max-width:900px){.proc-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:500px){.proc-grid{grid-template-columns:1fr}}
+
+/* SERVICES / PRICING */
 .pricing{padding:80px clamp(20px,4vw,60px);max-width:1400px;margin:0 auto;border-top:1px solid var(--brd)}
-.sv-list{margin-bottom:48px;border-top:1px solid var(--brd)}.sv-row{display:flex;justify-content:space-between;align-items:center;padding:18px 0;border-bottom:1px solid var(--brd)}
-.sv-name{font-family:var(--fd);font-size:16px;font-weight:600;color:var(--fg)}.sv-price{font-size:14px;color:var(--fg3)}
+.sv-list{margin-bottom:48px;border-top:1px solid var(--brd)}
+.sv-row{display:flex;justify-content:space-between;align-items:center;padding:22px 0;border-bottom:1px solid var(--brd);transition:all 0.3s;width:100%;background:none;text-align:left}
+.sv-row--link{cursor:pointer;text-decoration:none}.sv-row--link:hover{padding-left:8px}
+.sv-left{display:flex;flex-direction:column;gap:4px}
+.sv-name{font-family:var(--fd);font-size:18px;font-weight:600;color:var(--fg)}
+.sv-tagline{font-size:13px;color:var(--fg3)}
+.sv-arrow{font-size:20px;color:var(--fg3);transition:transform 0.3s}.sv-row--link:hover .sv-arrow{transform:translateX(4px);color:var(--fg)}
 .form-sec{max-width:520px;margin:0 auto;text-align:center}
 .form-title{font-family:var(--fd);font-size:clamp(24px,3.5vw,36px);font-weight:700;color:var(--fg);margin-bottom:8px}
 .form-sub{font-size:14px;color:var(--fg3);margin-bottom:28px}.form-sub a{color:var(--fg);text-decoration:underline}
 .form-fields{display:flex;flex-direction:column;gap:12px}
 .form-input{width:100%;padding:14px 18px;background:var(--bg);border:1px solid var(--brd2);font-family:var(--fb);font-size:14px;color:var(--fg);outline:none;transition:border-color 0.3s;-webkit-appearance:none;border-radius:0}.form-input:focus{border-color:var(--fg3)}
+.form-textarea{resize:vertical;min-height:80px;font-family:var(--fb)}
 .form-btn{width:100%;margin-top:4px;text-align:center;justify-content:center}
 
 /* ABOUT */
@@ -598,7 +760,7 @@ body{background:var(--bg);color:var(--fg);font-family:var(--fb);overflow-x:hidde
 .af-arrow{font-size:18px;color:var(--fg3)}
 .about-services{position:sticky;top:100px}.as-label{display:block;font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--fg2);margin-bottom:12px}
 .as-line{width:100%;height:1px;background:var(--brd);margin-bottom:0}
-.as-list{display:flex;flex-direction:column}.as-tag{font-size:14px;color:var(--fg2);padding:14px 0;border-bottom:1px solid var(--brd);transition:color 0.3s}.as-tag:hover{color:var(--fg)}
+.as-list{display:flex;flex-direction:column}.as-tag{font-size:14px;color:var(--fg2);padding:14px 0;border-bottom:1px solid var(--brd);transition:color 0.3s;text-decoration:none;display:block;background:none;border-top:none;border-left:none;border-right:none;font-family:var(--fb);text-align:left;cursor:pointer}.as-tag:hover{color:var(--fg)}
 @media(max-width:768px){.about-inner{grid-template-columns:1fr;gap:40px}.about-services{position:static}}
 
 /* FOUNDER POPUP */
@@ -621,23 +783,56 @@ body{background:var(--bg);color:var(--fg);font-family:var(--fb);overflow-x:hidde
 .ct-soc{display:flex;justify-content:center;gap:24px;margin-top:32px}
 .slink{font-size:11px;font-weight:500;letter-spacing:2px;text-transform:uppercase;color:var(--fg3);text-decoration:none;transition:color 0.3s}.slink:hover{color:var(--fg)}
 
-/* FOOTER + DUAL CLOCK */
+/* FOOTER */
 .foot{max-width:1400px;margin:0 auto;padding:24px 0;border-top:1px solid var(--brd);display:flex;justify-content:space-between;align-items:center}
-.foot-left{display:flex;align-items:center;gap:20px}.foot-logo{font-family:var(--fd);font-size:14px;font-weight:700;color:var(--fg)}.foot-cp{font-size:11px;color:var(--fg4)}
+.foot-left{display:flex;align-items:center;gap:20px}.foot-logo{font-family:var(--fd);font-size:14px;font-weight:700;color:var(--fg);text-decoration:none;background:none;border:none;cursor:pointer}.foot-cp{font-size:11px;color:var(--fg4)}
 .clocks{display:flex;gap:24px}
 .clock-item{display:flex;align-items:center;gap:8px}
 .clock-city{font-family:var(--fd);font-size:13px;font-weight:600;color:var(--fg)}.clock-time{font-family:var(--fb);font-size:13px;color:var(--fg2);font-variant-numeric:tabular-nums}.clock-tz{font-size:10px;color:var(--fg4)}
 @media(max-width:640px){.foot{flex-direction:column;gap:16px;text-align:center}.clocks{gap:16px}}
+
+/* SERVICE DETAIL PAGE */
+.sp-404{padding:200px 40px;text-align:center}
+.sp-404 h2{font-family:var(--fd);font-size:32px;color:var(--fg);margin-bottom:24px}
+
+.sp-hero{padding:160px clamp(20px,4vw,60px) 80px;max-width:1400px;margin:0 auto}
+.sp-back{font-size:12px;font-weight:500;letter-spacing:1px;text-transform:uppercase;color:var(--fg3);background:none;border:none;cursor:pointer;font-family:var(--fb);display:inline-block;margin-bottom:32px;transition:color 0.3s;padding:0}.sp-back:hover{color:var(--fg)}
+.sp-h1{font-family:var(--fd);font-size:clamp(32px,5vw,56px);font-weight:700;line-height:1.1;color:var(--fg);margin-bottom:20px;max-width:700px}
+.sp-desc{font-size:16px;line-height:1.75;color:var(--fg3);max-width:600px;margin-bottom:36px}
+.sp-acts{display:flex;gap:12px;flex-wrap:wrap}
+
+.sp-includes{padding:0 clamp(20px,4vw,60px) 80px;max-width:1400px;margin:0 auto}
+.sp-includes-inner{border-top:1px solid var(--brd);padding-top:48px}
+.sp-h2{font-family:var(--fd);font-size:clamp(22px,3vw,32px);font-weight:700;color:var(--fg);margin-bottom:32px}
+.sp-inc-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--brd)}
+.sp-inc-item{background:var(--bg);padding:24px 28px;display:flex;gap:16px;align-items:flex-start}
+.sp-inc-num{font-family:var(--fd);font-size:14px;font-weight:700;color:var(--fg4);flex-shrink:0}
+.sp-inc-text{font-size:15px;color:var(--fg2);line-height:1.5}
+@media(max-width:600px){.sp-inc-grid{grid-template-columns:1fr}}
+
+.sp-work{padding:0 clamp(20px,4vw,60px) 80px;max-width:1400px;margin:0 auto}
+.sp-work-inner{border-top:1px solid var(--brd);padding-top:48px}
+
+.sp-cta-sec{padding:80px clamp(20px,4vw,60px);max-width:1400px;margin:0 auto;text-align:center;border-top:1px solid var(--brd)}
+.sp-cta-h2{font-family:var(--fd);font-size:clamp(28px,4vw,44px);font-weight:700;color:var(--fg);margin-bottom:12px}
+.sp-cta-sub{font-size:15px;color:var(--fg3);margin-bottom:28px;font-style:italic}
       `}</style>
       <Grain />
-      <Nav />
-      <Hero />
-      <Work />
-      <ClientsSection />
-      <Reviews />
-      <Pricing />
-      <About />
-      <Contact />
+      <Nav onNavigate={navigate} currentPage={page} />
+      {page === "home" ? (
+        <>
+          <Hero />
+          <Work />
+          <ClientsSection />
+          <Reviews />
+          <Process />
+          <ServicesSection onNavigate={navigate} />
+          <About onNavigate={navigate} />
+          <Contact onNavigate={navigate} />
+        </>
+      ) : isService ? (
+        <ServicePage slug={serviceSlug} onNavigate={navigate} />
+      ) : null}
     </ThemeWrap>
   );
 }
