@@ -31,6 +31,64 @@ const CLIENTS = [
   { name:"Donald Aduvie", subs:"1.65K" },
 ];
 
+const CLIENT_VIDEOS = {
+  "Jude Bela": [
+    { title:"$6.8bn Fraud: The Hunt For Nigeria's Oil Cabal", videoId:"aFUGGexWxCw", role:"Design & Animation" },
+    { title:"How West Africa Became A Terror Hotspot", videoId:"cv8FMNQycU0", role:"Production, Editing, Design, Animation & Creative Direction" },
+    { title:"Uncovering Nigeria's Secret Oil Cartel (Ep. 02)", videoId:"j3GQtfU4fto", role:"Design, Animation, Sound Design & Creative Direction" },
+  ],
+  "Tayo Notes": [
+    { title:"He Fooled the World, Not the FBI", videoId:"Gmh5dURF7ws", role:"Production, Editing, Design, Animation & Creative Direction" },
+    { title:"How Influencers Scam You (and get away with it)", videoId:"2pjgiwzCTVA", role:"Production, Editing, Design, Animation & Creative Direction" },
+  ],
+  "The Odditty Diaries": [
+    { title:"My 2025 VISION BOARD (manifest my dream life with me)", videoId:"Dnb1rKJm4KA", role:"Full Production & Editing" },
+    { title:"BEST SELF DIARIES ep. 3", videoId:"PEQKfvY102A", role:"Full Production & Editing" },
+  ],
+  "News Central TV": [
+    { title:"Political Godfatherism: The Rise of Nyesom Wike", videoId:"1hk5PdqRtTE", role:"Production, Editing, Design, Animation & Creative Direction" },
+    { title:"Why Nigerian Refineries are always broken", videoId:"ai3wtlPnabE", role:"Production, Editing, Design, Animation & Creative Direction" },
+    { title:"Nigeria's Fake Palliatives: A Billion Dollar Scam", videoId:"-Kbso9oobFs", role:"Production, Editing, Design, Animation & Creative Direction" },
+    { title:"Nigeria's Power Crisis, Explained.", videoId:"2j3fesPwLT0", role:"Production, Editing, Design, Animation & Creative Direction" },
+  ],
+  "Danny Sully": [
+    { title:"4 Best Monthly Dividend ETFs To Earn Income (High Growth)", videoId:"630Op_fsQVQ", role:"Full Production" },
+    { title:"Chase Sapphire Preferred vs Reserve | Which Suits You?", videoId:"MkWg_VOlCwk", role:"Full Production" },
+  ],
+  "DABA TV": [
+    { title:"From $0 to Millions: Story Of 1st Forex Trader To Buy A Lambo", videoId:"1UThxu3WPfY", role:"Production, Editing & Creative Direction" },
+    { title:"Money Moves: Lessons from a $10M Female Asset Manager", videoId:"G8VW8PVCnJg", role:"Production, Editing & Creative Direction" },
+    { title:"Secrets To Supercharging Your Career With LinkedIn", videoId:"dBEfIVOXSqk", role:"Production, Editing & Creative Direction" },
+    { title:"Yele Bademosi Talks Universal Access to World Class Financial Services", videoId:"mH6U3OcFtLQ", role:"Production, Editing & Creative Direction" },
+  ],
+  "AM I TOO LOUD?!": [
+    { title:"Am I Faking my life? Let's talk imposter syndrome - Ep 16", videoId:"fNLV9PtZxCs", role:"Production, Editing & Creative Direction" },
+    { title:"AM I IN LOVE WITH MY MALE BESTFRIEND? | EP 20 | SEASON FINALE", videoId:"ohwcwvX73Mg", role:"Production, Editing & Creative Direction" },
+  ],
+  "CLIMB by VSC": [
+    { title:"How 40 People Built a $1.25B AI Unicorn to $50M ARR in 5 Months", videoId:"CR7kxeuAPNs", role:"Production, Editing, Design, Animation, Creative Direction & Strategy" },
+    { title:"China Won't Out-Innovate America, but They Will Out-Manufacture US", videoId:"L6Hm9XgL920", role:"Production, Editing, Design, Animation, Creative Direction & Strategy" },
+    { title:"How Data Centers Will Solve the Energy Crisis", videoId:"yC_ee5QYvhI", role:"Production, Creative Direction & Strategy" },
+    { title:"Humanoid Hype Will Bankrupt Investors", videoId:"_1BnZTkLGLM", role:"Production, Editing, Design, Animation, Creative Direction & Strategy" },
+  ],
+  "Donald Aduvie": [
+    { title:"How YouTube Saved My Life with 500 Subscribers", videoId:"9BO89LauHPg", role:"Production, Editing, Design, Animation & Creative Direction" },
+    { title:"Is This $3,000/Month Jersey City Apartment Worth It?", videoId:"0sGeHuICvhw", role:"Production, Editing, Creative Direction & Strategy" },
+    { title:"24 Hours in NYC with Africa's BIGGEST Travel Creator", videoId:"LQH7vi5CIW0", role:"Production, Editing & Creative Direction" },
+    { title:"How DreaKnowsBest Monetizes her 6 Million TikTok Followers", videoId:"X1hCwnxEnpA", role:"Production, Editing & Creative Direction" },
+  ],
+  "Humphrey Yang": [
+    { title:"7 Signs Someone is Secretly Wealthy", videoId:"SnX_GHgiwu0", role:"Editing" },
+    { title:"Ranking Every Credit Card in 2025 - Here's What's Good", videoId:"IiK5CbSdGSA", role:"Editing" },
+  ],
+  "Leonid Kim MD": [
+    { title:"Top 5 Fruits to Lower Blood Pressure Fast!", videoId:"WV1qw0rPtpI", role:"Design & Animation" },
+    { title:"This Vitamin D Mistake Is Making You Sicker (Do This Instead)", videoId:"4xyXCj0PFGc", role:"Design & Animation" },
+    { title:"This Pill is linked to DEMENTIA", videoId:"ny7M6f1y0ow", role:"Design & Animation" },
+  ],
+  "Profff TV": [],
+};
+
 const TESTIMONIALS = [
   { name:"Jude Bela", handle:"198K subscribers", quote:"He is highly dedicated to the task and understands how to tell a story with editing. He is a team player and fun to be with. His creativity brings the stories to life." },
   { name:"Tayo Notes", handle:"2.21K subscribers", quote:"A great video editor, illustrator and animator. He goes above and beyond to support projects with full commitment to the channel's excellence. I will gladly recommend him anytime because you will be getting more than a video editor." },
@@ -303,32 +361,40 @@ function ClientsSection() {
         <h2 className="sec-title">Creators we've worked with.</h2>
       </div>
       <div className="cl-list">
-        {CLIENTS.map((c, i) => (
-          <div key={i}>
-            <div className="cl-row" onClick={() => setExpanded(expanded === i ? null : i)}>
-              <div className="cl-left">
-                <span className="cl-av">{c.name.charAt(0)}</span>
-                <span className="cl-name">{c.name}</span>
+        {CLIENTS.map((c, i) => {
+          const videos = CLIENT_VIDEOS[c.name] || [];
+          return (
+            <div key={i}>
+              <div className="cl-row" onClick={() => setExpanded(expanded === i ? null : i)}>
+                <div className="cl-left">
+                  <span className="cl-av">{c.name.charAt(0)}</span>
+                  <span className="cl-name">{c.name}</span>
+                </div>
+                <div className="cl-right">
+                  <span className="cl-subs">{c.subs} Subscribers</span>
+                  <span className="cl-chevron">{expanded === i ? "−" : "+"}</span>
+                </div>
               </div>
-              <span className="cl-subs">{c.subs} Subscribers</span>
-            </div>
-            {expanded === i && (
-              <div className="cl-expand">
-                <div className="cl-expand-grid">
-                  {PROJECTS.filter(p => p.client === c.name).map(p => (
-                    <div key={p.id} className="cl-mini">
-                      <img src={`https://img.youtube.com/vi/${p.videoId}/mqdefault.jpg`} alt={p.title} />
-                      <span>{p.title}</span>
+              {expanded === i && (
+                <div className="cl-expand">
+                  {videos.length > 0 ? (
+                    <div className="cl-scroll">
+                      {videos.map((v, j) => (
+                        <div key={j} className="cl-vid">
+                          <img src={`https://img.youtube.com/vi/${v.videoId}/mqdefault.jpg`} alt={v.title} />
+                          <span className="cl-vid-title">{v.title}</span>
+                          <span className="cl-vid-role">{v.role}</span>
+                        </div>
+                      ))}
                     </div>
-                  ))}
-                  {PROJECTS.filter(p => p.client === c.name).length === 0 && (
+                  ) : (
                     <p className="cl-no">Projects from this creator will be added soon.</p>
                   )}
                 </div>
-              </div>
-            )}
-          </div>
-        ))}
+              )}
+            </div>
+          );
+        })}
       </div>
     </section>
   );
@@ -705,10 +771,18 @@ body{background:var(--bg);color:var(--fg);font-family:var(--fb);overflow-x:hidde
 .clients-sec{padding:0 clamp(20px,4vw,60px) 80px;max-width:1400px;margin:0 auto}
 .cl-list{border-top:1px solid var(--brd)}.cl-row{display:flex;justify-content:space-between;align-items:center;padding:16px 0;border-bottom:1px solid var(--brd);cursor:pointer;transition:all 0.3s}.cl-row:hover{padding-left:8px}
 .cl-left{display:flex;align-items:center;gap:12px}.cl-av{width:32px;height:32px;border-radius:50%;background:var(--brd);display:flex;align-items:center;justify-content:center;font-family:var(--fd);font-size:13px;font-weight:700;color:var(--fg2);flex-shrink:0}
-.cl-name{font-family:var(--fd);font-size:15px;font-weight:600;color:var(--fg)}.cl-subs{font-size:13px;color:var(--fg3);white-space:nowrap}
-.cl-expand{padding:16px 0 24px;border-bottom:1px solid var(--brd)}.cl-expand-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px}
-.cl-mini{display:flex;flex-direction:column;gap:6px}.cl-mini img{width:100%;aspect-ratio:16/9;object-fit:cover;border:1px solid var(--brd)}.cl-mini span{font-size:12px;color:var(--fg2);line-height:1.3}
-.cl-no{font-size:13px;color:var(--fg3);font-style:italic;grid-column:1/-1}
+.cl-name{font-family:var(--fd);font-size:15px;font-weight:600;color:var(--fg)}
+.cl-right{display:flex;align-items:center;gap:16px}
+.cl-subs{font-size:13px;color:var(--fg3);white-space:nowrap}
+.cl-chevron{font-size:18px;color:var(--fg4);font-weight:300;width:20px;text-align:center}
+.cl-expand{padding:20px 0 24px;border-bottom:1px solid var(--brd)}
+.cl-scroll{display:flex;gap:16px;overflow-x:auto;padding-bottom:8px;-webkit-overflow-scrolling:touch;scrollbar-width:thin}
+.cl-scroll::-webkit-scrollbar{height:3px}.cl-scroll::-webkit-scrollbar-thumb{background:var(--fg4);border-radius:2px}
+.cl-vid{flex-shrink:0;width:220px;display:flex;flex-direction:column;gap:6px}
+.cl-vid img{width:100%;aspect-ratio:16/9;object-fit:cover;border:1px solid var(--brd);border-radius:2px}
+.cl-vid-title{font-size:12px;font-weight:500;color:var(--fg);line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.cl-vid-role{font-size:10px;color:var(--fg3);letter-spacing:0.3px}
+.cl-no{font-size:13px;color:var(--fg3);font-style:italic}
 
 /* REVIEWS */
 .reviews{padding:0 clamp(20px,4vw,60px) 80px;max-width:1400px;margin:0 auto}
