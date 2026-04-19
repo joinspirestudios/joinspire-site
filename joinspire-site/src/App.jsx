@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { SpeedInsights } from "@vercel/speed-insights/react";
 
 const FOUNDER_PHOTO = "/joseph.jpg";
 
@@ -908,6 +909,7 @@ body{background:var(--bg);color:var(--fg);font-family:var(--fb);overflow-x:hidde
       ) : isService ? (
         <ServicePage slug={serviceSlug} onNavigate={navigate} />
       ) : null}
+      <SpeedInsights />
     </ThemeWrap>
   );
 }
