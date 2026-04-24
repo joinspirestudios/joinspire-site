@@ -89,6 +89,21 @@ const CLIENT_VIDEOS = {
   "Profff TV": [],
 };
 
+const CLIENT_META = {
+  "Jude Bela": { category:"Documentary", slug:"jude-bela", narrative:"We produce documentary-grade animated visual systems for Jude's investigative storytelling — transforming dense research into compelling visual narratives that hold attention from the first frame. Our work spans map animations, infographic sequences, and full motion design pipelines that bring complex geopolitical stories to life." },
+  "Tayo Notes": { category:"Documentary", slug:"tayo-notes", narrative:"We handle end-to-end production for Tayo's documentary investigations — from narrative structuring to design, animation, and final edit. Every video is built to explain complex stories clearly while keeping viewers locked in through deliberate pacing and visual intelligence." },
+  "The Odditty Diaries": { category:"Lifestyle", slug:"odditty-diaries", narrative:"We produce and edit full episodes for The Odditty Diaries — lifestyle content that blends personal storytelling with cinematic quality. Our role covers the entire production pipeline from raw footage to publish-ready video." },
+  "News Central TV": { category:"News & Documentary", slug:"news-central", narrative:"We serve as the creative production arm for News Central TV's investigative documentary series — producing, editing, designing, animating, and directing long-form explainers on Nigerian politics, infrastructure, and economic systems. Every piece is built to make complex policy and history accessible." },
+  "Danny Sully": { category:"Finance & Education", slug:"danny-sully", narrative:"We handle full production for Danny's personal finance content — taking each video from concept through final delivery. The work is built around making financial information visually clear, engaging, and actionable for his audience." },
+  "DABA TV": { category:"Finance & Business", slug:"daba-tv", narrative:"We produce, edit, and creatively direct DABA TV's long-form interview and documentary content — covering entrepreneurship, fintech, and business stories across Africa. Our role spans the full production pipeline with a focus on narrative clarity and professional presentation." },
+  "AM I TOO LOUD?!": { category:"Lifestyle & Talk", slug:"am-i-too-loud", narrative:"We produce, edit, and creatively direct AM I TOO LOUD?!'s talk-show format content — conversation-driven episodes that balance entertainment with authenticity. Our editing approach prioritizes emotional pacing and viewer retention." },
+  "CLIMB by VSC": { category:"Podcast & Business", slug:"climb-vsc", narrative:"We serve as the full production, creative direction, and strategy team for CLIMB by VSC — a venture capital podcast covering AI, enterprise tech, and market dynamics. Our work covers editing, motion design, thumbnail design, channel strategy, and YouTube growth. The channel has featured founders and investors behind billion-dollar companies." },
+  "Donald Aduvie": { category:"Lifestyle & Vlog", slug:"donald-aduvie", narrative:"We produce, edit, and creatively direct Donald's lifestyle and vlog content — covering everything from travel and apartment tours to creator economy deep-dives. Our approach focuses on story structure and visual polish that elevates everyday content into something worth watching." },
+  "Humphrey Yang": { category:"Finance & Education", slug:"humphrey-yang", narrative:"We provide editing support for Humphrey's personal finance content. Working within his established visual system, we deliver clean, retention-optimized edits that match his high production standards across millions of monthly views." },
+  "Leonid Kim MD": { category:"Health & Education", slug:"leonid-kim", narrative:"We design and animate the visual systems for Dr. Kim's health education content — medical infographics, data visualizations, and motion graphics that make complex science clear and trustworthy. Our animation work has contributed to videos reaching millions of views." },
+  "Profff TV": { category:"IRL / Reality", slug:"profff-tv", narrative:"Case study coming soon." },
+};
+
 const TESTIMONIALS = [
   { name:"Jude Bela", handle:"198K subscribers", quote:"He is highly dedicated to the task and understands how to tell a story with editing. He is a team player and fun to be with. His creativity brings the stories to life." },
   { name:"Tayo Notes", handle:"2.21K subscribers", quote:"A great video editor, illustrator and animator. He goes above and beyond to support projects with full commitment to the channel's excellence. I will gladly recommend him anytime because you will be getting more than a video editor." },
@@ -352,8 +367,7 @@ function Work() {
 }
 
 // ===== CLIENTS =====
-function ClientsSection() {
-  const [expanded, setExpanded] = useState(null);
+function ClientsSection({ onNavigate }) {
   return (
     <section id="clients" className="clients-sec">
       <div className="sec-head">
@@ -362,36 +376,21 @@ function ClientsSection() {
       </div>
       <div className="cl-list">
         {CLIENTS.map((c, i) => {
+          const meta = CLIENT_META[c.name];
           const videos = CLIENT_VIDEOS[c.name] || [];
           return (
-            <div key={i}>
-              <div className="cl-row" onClick={() => setExpanded(expanded === i ? null : i)}>
-                <div className="cl-left">
-                  <span className="cl-av">{c.name.charAt(0)}</span>
+            <div key={i} className="cl-row" onClick={() => meta && onNavigate("client:" + meta.slug)}>
+              <div className="cl-left">
+                <span className="cl-av">{c.name.charAt(0)}</span>
+                <div className="cl-info">
                   <span className="cl-name">{c.name}</span>
-                </div>
-                <div className="cl-right">
-                  <span className="cl-subs">{c.subs} Subscribers</span>
-                  <span className="cl-chevron">{expanded === i ? "−" : "+"}</span>
+                  {meta && <span className="cl-cat-tag">{meta.category}</span>}
                 </div>
               </div>
-              {expanded === i && (
-                <div className="cl-expand">
-                  {videos.length > 0 ? (
-                    <div className="cl-scroll">
-                      {videos.map((v, j) => (
-                        <div key={j} className="cl-vid">
-                          <img src={`https://img.youtube.com/vi/${v.videoId}/mqdefault.jpg`} alt={v.title} />
-                          <span className="cl-vid-title">{v.title}</span>
-                          <span className="cl-vid-role">{v.role}</span>
-                        </div>
-                      ))}
-                    </div>
-                  ) : (
-                    <p className="cl-no">Projects from this creator will be added soon.</p>
-                  )}
-                </div>
-              )}
+              <div className="cl-right">
+                <span className="cl-subs">{c.subs}</span>
+                <span className="cl-arrow">→</span>
+              </div>
             </div>
           );
         })}
@@ -670,6 +669,80 @@ function ServicePage({ slug, onNavigate }) {
 }
 
 // ===== APP =====
+// ===== CLIENT CASE STUDY PAGE =====
+function ClientPage({ slug, onNavigate }) {
+  const client = CLIENTS.find(c => CLIENT_META[c.name]?.slug === slug);
+  if (!client) {
+    return (
+      <div className="sp-404">
+        <h2>Creator not found</h2>
+        <button className="btn btn--dark" onClick={() => onNavigate("home")}>Back to Home</button>
+      </div>
+    );
+  }
+  const meta = CLIENT_META[client.name];
+  const videos = CLIENT_VIDEOS[client.name] || [];
+  const [lbp, setLbp] = useState(null);
+
+  return (
+    <>
+      <div className="cp-hero">
+        <button className="sp-back" onClick={() => onNavigate("home")}>← Back</button>
+        <div className="cp-header">
+          <h1 className="cp-name">{client.name}</h1>
+          <span className="cp-category">{meta.category}</span>
+        </div>
+        <div className="cp-metrics">
+          <div className="cp-metric"><span className="cp-metric-val">{client.subs}</span><span className="cp-metric-label">Subscribers</span></div>
+          <div className="cp-metric"><span className="cp-metric-val">{videos.length}</span><span className="cp-metric-label">Projects</span></div>
+        </div>
+      </div>
+
+      <div className="cp-narrative">
+        <div className="cp-narrative-inner">
+          <p className="sec-label">Our Work Together</p>
+          <p className="cp-story">{meta.narrative}</p>
+        </div>
+      </div>
+
+      {videos.length > 0 && (
+        <div className="cp-work">
+          <div className="cp-work-inner">
+            <p className="sec-label">Selected Projects</p>
+            <div className="cp-grid">
+              {videos.map((v, i) => (
+                <div key={i} className="cp-card" onClick={() => setLbp(v)}>
+                  <div className="cp-thumb">
+                    <img src={`https://img.youtube.com/vi/${v.videoId}/hqdefault.jpg`} alt={v.title} />
+                    <div className="cp-thumb-over">
+                      <div className="vc-play"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="6,3 20,12 6,21" /></svg></div>
+                    </div>
+                  </div>
+                  <h3 className="cp-card-title">{v.title}</h3>
+                  <span className="cp-card-role">{v.role}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      <div className="sp-cta-sec">
+        <h2 className="sp-cta-h2">Want results like this?</h2>
+        <p className="sp-cta-sub">We take on a limited number of projects each month.</p>
+        <div style={{display:"flex",gap:12,justifyContent:"center",flexWrap:"wrap"}}>
+          <a href={S.bookCall} className="btn btn--dark btn--lg" target="_blank" rel="noopener noreferrer">Book a Call</a>
+          <a href={`mailto:${S.email}`} className="btn btn--out btn--lg">{S.email}</a>
+        </div>
+      </div>
+
+      <Contact onNavigate={onNavigate} />
+
+      {lbp && <Lightbox project={{videoId: lbp.videoId, title: lbp.title, category: meta.category, client: client.name}} onClose={() => setLbp(null)} />}
+    </>
+  );
+}
+
 export default function App() {
   const [page, setPage] = useState("home");
 
@@ -678,9 +751,10 @@ export default function App() {
     window.scrollTo(0, 0);
   };
 
-  // Parse page state
   const isService = page.startsWith("service:");
   const serviceSlug = isService ? page.split(":")[1] : null;
+  const isClient = page.startsWith("client:");
+  const clientSlug = isClient ? page.split(":")[1] : null;
 
   return (
     <ThemeWrap>
@@ -769,20 +843,14 @@ body{background:var(--bg);color:var(--fg);font-family:var(--fb);overflow-x:hidde
 
 /* CLIENTS */
 .clients-sec{padding:0 clamp(20px,4vw,60px) 80px;max-width:1400px;margin:0 auto}
-.cl-list{border-top:1px solid var(--brd)}.cl-row{display:flex;justify-content:space-between;align-items:center;padding:16px 0;border-bottom:1px solid var(--brd);cursor:pointer;transition:all 0.3s}.cl-row:hover{padding-left:8px}
+.cl-list{border-top:1px solid var(--brd)}.cl-row{display:flex;justify-content:space-between;align-items:center;padding:18px 0;border-bottom:1px solid var(--brd);cursor:pointer;transition:all 0.3s}.cl-row:hover{padding-left:8px}
 .cl-left{display:flex;align-items:center;gap:12px}.cl-av{width:32px;height:32px;border-radius:50%;background:var(--brd);display:flex;align-items:center;justify-content:center;font-family:var(--fd);font-size:13px;font-weight:700;color:var(--fg2);flex-shrink:0}
+.cl-info{display:flex;flex-direction:column;gap:2px}
 .cl-name{font-family:var(--fd);font-size:15px;font-weight:600;color:var(--fg)}
+.cl-cat-tag{font-size:11px;color:var(--fg3)}
 .cl-right{display:flex;align-items:center;gap:16px}
 .cl-subs{font-size:13px;color:var(--fg3);white-space:nowrap}
-.cl-chevron{font-size:18px;color:var(--fg4);font-weight:300;width:20px;text-align:center}
-.cl-expand{padding:20px 0 24px;border-bottom:1px solid var(--brd)}
-.cl-scroll{display:flex;gap:16px;overflow-x:auto;padding-bottom:8px;-webkit-overflow-scrolling:touch;scrollbar-width:thin}
-.cl-scroll::-webkit-scrollbar{height:3px}.cl-scroll::-webkit-scrollbar-thumb{background:var(--fg4);border-radius:2px}
-.cl-vid{flex-shrink:0;width:220px;display:flex;flex-direction:column;gap:6px}
-.cl-vid img{width:100%;aspect-ratio:16/9;object-fit:cover;border:1px solid var(--brd);border-radius:2px}
-.cl-vid-title{font-size:12px;font-weight:500;color:var(--fg);line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-.cl-vid-role{font-size:10px;color:var(--fg3);letter-spacing:0.3px}
-.cl-no{font-size:13px;color:var(--fg3);font-style:italic}
+.cl-arrow{font-size:16px;color:var(--fg4);transition:transform 0.3s}.cl-row:hover .cl-arrow{transform:translateX(4px);color:var(--fg3)}
 
 /* REVIEWS */
 .reviews{padding:0 clamp(20px,4vw,60px) 80px;max-width:1400px;margin:0 auto}
@@ -870,6 +938,31 @@ body{background:var(--bg);color:var(--fg);font-family:var(--fb);overflow-x:hidde
 .sp-404{padding:200px 40px;text-align:center}
 .sp-404 h2{font-family:var(--fd);font-size:32px;color:var(--fg);margin-bottom:24px}
 
+/* CLIENT CASE STUDY PAGE */
+.cp-hero{padding:160px clamp(20px,4vw,60px) 60px;max-width:1400px;margin:0 auto}
+.cp-header{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:16px;margin-bottom:32px}
+.cp-name{font-family:var(--fd);font-size:clamp(36px,6vw,64px);font-weight:700;line-height:1.05;color:var(--fg)}
+.cp-category{font-family:var(--fb);font-size:14px;font-style:italic;color:var(--fg3);letter-spacing:0.5px}
+.cp-metrics{display:flex;gap:40px}
+.cp-metric{display:flex;flex-direction:column;gap:2px}
+.cp-metric-val{font-family:var(--fd);font-size:clamp(28px,4vw,42px);font-weight:700;color:var(--fg);line-height:1}
+.cp-metric-label{font-size:12px;color:var(--fg3);letter-spacing:1px;text-transform:uppercase}
+
+.cp-narrative{padding:0 clamp(20px,4vw,60px) 60px;max-width:1400px;margin:0 auto}
+.cp-narrative-inner{border-top:1px solid var(--brd);padding-top:40px;max-width:700px}
+.cp-story{font-size:16px;line-height:1.8;color:var(--fg2);margin-top:16px}
+
+.cp-work{padding:0 clamp(20px,4vw,60px) 80px;max-width:1400px;margin:0 auto}
+.cp-work-inner{border-top:1px solid var(--brd);padding-top:40px}
+.cp-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px;margin-top:24px}
+.cp-card{cursor:pointer;transition:all 0.3s}.cp-card:hover{transform:translateY(-3px)}
+.cp-thumb{position:relative;aspect-ratio:16/9;overflow:hidden;background:#111;border:1px solid var(--brd)}
+.cp-thumb img{width:100%;height:100%;object-fit:cover;transition:transform 0.4s}.cp-card:hover .cp-thumb img{transform:scale(1.03)}
+.cp-thumb-over{position:absolute;inset:0;background:rgba(0,0,0,0.3);display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity 0.3s}.cp-card:hover .cp-thumb-over{opacity:1}
+.cp-card-title{font-family:var(--fd);font-size:15px;font-weight:600;color:var(--fg);line-height:1.3;margin-top:12px}
+.cp-card-role{font-size:11px;color:var(--fg3);margin-top:4px;display:block;letter-spacing:0.3px}
+@media(max-width:500px){.cp-grid{grid-template-columns:1fr}.cp-metrics{gap:24px}}
+
 .sp-hero{padding:160px clamp(20px,4vw,60px) 80px;max-width:1400px;margin:0 auto}
 .sp-back{font-size:12px;font-weight:500;letter-spacing:1px;text-transform:uppercase;color:var(--fg3);background:none;border:none;cursor:pointer;font-family:var(--fb);display:inline-block;margin-bottom:32px;transition:color 0.3s;padding:0}.sp-back:hover{color:var(--fg)}
 .sp-h1{font-family:var(--fd);font-size:clamp(32px,5vw,56px);font-weight:700;line-height:1.1;color:var(--fg);margin-bottom:20px;max-width:700px}
@@ -898,7 +991,7 @@ body{background:var(--bg);color:var(--fg);font-family:var(--fb);overflow-x:hidde
         <>
           <Hero />
           <Work />
-          <ClientsSection />
+          <ClientsSection onNavigate={navigate} />
           <Reviews />
           <Process />
           <ServicesSection onNavigate={navigate} />
@@ -907,6 +1000,8 @@ body{background:var(--bg);color:var(--fg);font-family:var(--fb);overflow-x:hidde
         </>
       ) : isService ? (
         <ServicePage slug={serviceSlug} onNavigate={navigate} />
+      ) : isClient ? (
+        <ClientPage slug={clientSlug} onNavigate={navigate} />
       ) : null}
     </ThemeWrap>
   );
