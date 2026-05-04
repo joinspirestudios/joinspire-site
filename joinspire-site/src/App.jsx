@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { Analytics } from "@vercel/analytics/react";
 
 const FOUNDER_PHOTO = "/joseph.jpg";
 
@@ -1003,6 +1004,7 @@ body{background:var(--bg);color:var(--fg);font-family:var(--fb);overflow-x:hidde
       ) : isClient ? (
         <ClientPage slug={clientSlug} onNavigate={navigate} />
       ) : null}
+      <Analytics />
     </ThemeWrap>
   );
 }
